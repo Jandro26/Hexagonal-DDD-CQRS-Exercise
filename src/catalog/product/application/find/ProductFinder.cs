@@ -8,17 +8,17 @@ namespace Hexagonal_Exercise.catalog.product.application.find
     public class ProductFinder
     {
         private readonly IProductRepository _productRepository;
-        public ProductFinder (IProductRepository productRepository)
+        private readonly DomainProductFinder _domainFinder;
+
+        public ProductFinder(IProductRepository productRepository)
         {
             _productRepository = productRepository;
+            _domainFinder = new DomainProductFinder(productRepository);
         }
 
         public async Task<Product> Execute(ProductId id)
         {
-            var product =  await _productRepository.Get(id).ConfigureAwait(false);
-            if (product == null)
-                throw new Exception("Product not exist");
-
+            var product =  await _domainFinder.Find(id).ConfigureAwait(false);
             return product;
         }
     }

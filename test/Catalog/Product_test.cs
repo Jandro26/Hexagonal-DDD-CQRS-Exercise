@@ -50,7 +50,6 @@ namespace Exagonal_exercise.test
             await productRenamer.Execute(id, name_new).ConfigureAwait(false);
         }
 
-
         [Fact]
         public async void Check_product_finder_faild_product_not_find()
         {
@@ -63,6 +62,5 @@ namespace Exagonal_exercise.test
 
             Assert.Equal("Product not exist", task.Result.Message);
         }
-
     }
 }
