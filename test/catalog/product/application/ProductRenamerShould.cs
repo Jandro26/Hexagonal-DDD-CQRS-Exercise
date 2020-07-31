@@ -1,10 +1,7 @@
-using Hexagonal_Exercise.catalog.product.application.create;
-using Hexagonal_Exercise.catalog.product.application.find;
+using Exagonal_exercise.test.catalog.product.domain;
 using Hexagonal_Exercise.catalog.product.application.update;
 using Hexagonal_Exercise.catalog.product.domain;
-using Hexagonal_Exercise.core.domain.eventBus;
 using Moq;
-using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -12,18 +9,31 @@ namespace Exagonal_exercise.test.catalog.product.application
 {
     public class ProductRenamerShould
     {
+        private readonly Mock<IProductRepository> _productRepository;
+        private readonly ProductRenamer _productRenamer;
+
+        public ProductRenamerShould()
+        {
+            _productRepository = new Mock<IProductRepository>();
+            _productRenamer = new ProductRenamer(_productRepository.Object);
+        }
+
         [Fact]
         public async void it_should_rename_product()
         {
-            var id = new ProductId(2);
-            var name = new ProductName("Product name");
-            var name_new = new ProductName("Product Rename");
+            var id = ProductIdMother.Create();
+            var product = ProductMother.Create();
+            var name_new = ProductNameMother.Create("Rename product");
+            _productRepository.Setup(x => x.Get(It.IsAny<ProductId>())).Returns(Task.FromResult<Product>(product));
+            _productRepository.Setup(x => x.Modify(It.IsAny<ProductId>(), It.IsAny<Product>()));
 
-            var productRepository = new Mock<IProductRepository>();
-            productRepository.Setup(x => x.Get(It.IsAny<ProductId>())).Returns(Task.FromResult(new Product(id, name)));
-            productRepository.Setup(x => x.Modify(It.IsAny<ProductId>(), It.IsAny<Product>()));
-            var productRenamer = new ProductRenamer(productRepository.Object);
-            await productRenamer.Execute(id, name_new).ConfigureAwait(false);
+            await _productRenamer.Execute(id, name_new).ConfigureAwait(false);
+
+            _productRepository.Verify(r => r.Get(id), Times.Once);
+            _productRepository.Verify(r => r.Modify(id, product), Times.Once);
+            Assert.Equal(name_new, product.Name);
         }
+
+
     }
 }
