@@ -18,7 +18,8 @@ namespace Exagonal_exercise.test.entry_point.catalog.product.v1
 
             _httpClient = _factory.CreateClient(new WebApplicationFactoryClientOptions
             {
-                AllowAutoRedirect = false
+                AllowAutoRedirect = false,
+                BaseAddress = new System.Uri("https://localhost:44339")
             });
 
         }
@@ -28,7 +29,7 @@ namespace Exagonal_exercise.test.entry_point.catalog.product.v1
         {
             var product = CreateProductModelMother.Create();
             var request = new HttpRequestMessage(HttpMethod.Post,
-            "https://localhost:44339/api/Products");
+            "/api/Products");
             var productJson = new StringContent(JsonSerializer.Serialize(product), Encoding.UTF8, "application/json");
             request.Content = productJson;
 
@@ -41,7 +42,7 @@ namespace Exagonal_exercise.test.entry_point.catalog.product.v1
         public async void It_should_get_a_product_by_Id()
         {
             var request = new HttpRequestMessage(HttpMethod.Get,
-            "https://localhost:44339/api/Products?productId=1");
+            "/api/Products?productId=1");
 
             var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
 
@@ -54,7 +55,7 @@ namespace Exagonal_exercise.test.entry_point.catalog.product.v1
 
             var product = RenameProductModelMother.Create();
             var request = new HttpRequestMessage(HttpMethod.Put,
-            "https://localhost:44339/api/Products?productId=1");
+            "/api/Products?productId=1");
             var productJson = new StringContent(JsonSerializer.Serialize(product), Encoding.UTF8, "application/json");
             request.Content = productJson;
 
@@ -68,13 +69,13 @@ namespace Exagonal_exercise.test.entry_point.catalog.product.v1
         {
             var product = CreateProductModelMother.Create(2);
             var requestArr = new HttpRequestMessage(HttpMethod.Post,
-            "https://localhost:44339/api/Products");
+            "/api/Products");
             var productJson = new StringContent(JsonSerializer.Serialize(product), Encoding.UTF8, "application/json");
             requestArr.Content = productJson;
             var responseArr = await _httpClient.SendAsync(requestArr).ConfigureAwait(false);
 
             var request = new HttpRequestMessage(HttpMethod.Delete,
-            "https://localhost:44339/api/Products?productId=2");
+            "/api/Products?productId=2");
 
             var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
 
