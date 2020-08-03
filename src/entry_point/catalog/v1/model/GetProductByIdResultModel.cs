@@ -14,7 +14,7 @@ namespace Hexagonal_Exercise.entry_point.catalog.v1.model
         [Required]
         public string Name { get; set; }
 
-        public int Category { get; set; }
+        public int? Category { get; set; }
 
         public string Description { get; set; }
     }

@@ -36,7 +36,7 @@ namespace Exagonal_exercise.test.catalog.product.application
         }
 
         [Fact]
-        public async void it_should_fail_when_the_product_no_exist()
+        public void it_should_fail_when_the_product_no_exist()
         {
             var id = ProductIdMother.Create();
             var product = ProductMother.Create();

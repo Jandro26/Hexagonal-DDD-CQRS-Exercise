@@ -5,22 +5,17 @@ namespace Hexagonal_Exercise.catalog.product.application.find
 {
     public class FindProductQueryResult: QueryResult
     {
-        private readonly int _id;
-        private readonly string _name;
-        private readonly int _categoryId;
-        private readonly string _description;
-
-        public int Id { get { return _id; } }
-        public string Name { get { return _name; } }
-        public int CategoryId { get { return _categoryId; } }
-        public string Description { get { return _description; } }
+        public int Id { get; }
+        public string Name { get; }
+        public int? CategoryId { get; }
+        public string Description { get; }
 
         public FindProductQueryResult(Product product)
         {
-            _id = product.Id.Value;
-            _name = product.Name.Value;
-            _categoryId = product.CategoryId.Value;
-            _description = product.Description.Value;
+            Id = product.Id.Value;
+            Name = product.Name.Value;
+            CategoryId = product.CategoryId?.Value;
+            Description = product.Description?.Value;
         }
     }
 }

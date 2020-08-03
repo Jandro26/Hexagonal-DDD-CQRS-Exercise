@@ -9,7 +9,7 @@ namespace Hexagonal_Exercise.core.infrastructure
         public void Publish(IEnumerable<DomainEvent> events)
         {
             //TODO
-            throw new NotImplementedException();
+            /throw new NotImplementedException();
         }
     }
 }
