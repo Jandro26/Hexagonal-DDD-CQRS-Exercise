@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Hexagonal_Exercise.catalog.product.domain
 {
@@ -11,6 +12,8 @@ namespace Hexagonal_Exercise.catalog.product.domain
         public Task Delete(Product product);
 
         public Task<Product> Get(ProductId id);
+
+        public Task<IEnumerable<Product>> GetAll();
 
     }
 }

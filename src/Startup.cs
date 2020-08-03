@@ -52,7 +52,7 @@ namespace Hexagonal_Exercise
 
             services.AddTransient<IValidator<CreateProductModel>, CreateProductModelValidator>();
 
-            services.AddTransient<IProductRepository, ProductSQLRepository>()
+            services.AddScoped<IProductRepository, ProductSQLRepository>()
                     .AddSingleton<IDomainEventBus, DomainEventBusDefault>()
                     .AddSingleton<ICommandDispacher, CommandBusDefault>()
                     .AddSingleton<IQueryDispacher, QueryBusDefault>();
