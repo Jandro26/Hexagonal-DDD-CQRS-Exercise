@@ -8,11 +8,10 @@ namespace Hexagonal_Exercise.catalog.category.domain
 {
     public class CategoryName: ValueObject
     {
-        private string _name;
-        public string Value { get {return _name; } }
+        public string Name { get; }
         public CategoryName(string name)
         {
-            _name = name.Trim().Substring(0, 10);
+            Name = name.Trim().Substring(0, 10);
         }
     }
 }
