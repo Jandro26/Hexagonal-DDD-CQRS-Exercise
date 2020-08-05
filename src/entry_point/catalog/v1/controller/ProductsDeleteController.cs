@@ -12,11 +12,11 @@ namespace Hexagonal_Exercise.entry_point.catalog.v1.controller
     [ApiController]
     public class ProductsDeleteController : ControllerBase
     {
-        private readonly ICommandDispacher _commandBus;
+        private readonly CommandDispacher commandBus;
 
-        public ProductsDeleteController(ICommandDispacher commandBus)
+        public ProductsDeleteController(CommandDispacher commandBus)
         {
-            _commandBus = commandBus;
+            this.commandBus = commandBus;
         }
                
         /// <summary>
@@ -36,7 +36,7 @@ namespace Hexagonal_Exercise.entry_point.catalog.v1.controller
             try
             {
                 var productCommand = new DeleteProductCommand(productId);
-                await _commandBus.Dispatch(productCommand, cancellationToken).ConfigureAwait(false);
+                await commandBus.Dispatch(productCommand, cancellationToken).ConfigureAwait(false);
                 return Ok();
             }
             catch (Exception ex)

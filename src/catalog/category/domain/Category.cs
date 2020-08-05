@@ -5,9 +5,9 @@ namespace Hexagonal_Exercise.catalog.category.domain
 {
     public class Category: AggregateRoot
     {
-        public CategoryId Id { get; set; }
+        public CategoryId Id { get; }
 
-        public CategoryName Name { get; set; }
+        public CategoryName Name { get; }
 
         public Category(CategoryId id, CategoryName name)
         {

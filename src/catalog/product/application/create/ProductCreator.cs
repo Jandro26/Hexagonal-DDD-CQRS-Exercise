@@ -6,21 +6,21 @@ namespace Hexagonal_Exercise.catalog.product.application.create
 {
     public class ProductCreator
     {
-        private readonly IProductRepository _productRepository;
-        private readonly IDomainEventBus _eventBus;
+        private readonly ProductRepository productRepository;
+        private readonly DomainEventBus eventBus;
 
-        public ProductCreator(IProductRepository productRepository, IDomainEventBus eventBus)
+        public ProductCreator(ProductRepository productRepository, DomainEventBus eventBus)
         {
-            _productRepository = productRepository;
-            _eventBus = eventBus;
+            this.productRepository = productRepository;
+            this.eventBus = eventBus;
         }
 
         public async Task Execute(ProductId id, ProductName name)
         {
             var product = Product.Create(id, name);
 
-            await _productRepository.Add(product).ConfigureAwait(false);
-            _eventBus.Publish(product.DomainEvents);
+            await productRepository.Save(product).ConfigureAwait(false);
+            eventBus.Publish(product.GetDomainEvents());
         }
     }
 }

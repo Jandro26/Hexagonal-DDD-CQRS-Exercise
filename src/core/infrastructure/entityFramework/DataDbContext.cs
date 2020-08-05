@@ -9,7 +9,7 @@ namespace Hexagonal_Exercise.core.infrastructure.entityFramework
 {
     public class DataDbContext: DbContext
     {
-        private static readonly string _connectionString = ConfigurationManager.ConnectionStrings["Data:ConnectionString"].ToString();
+        private static readonly string connectionString = ConfigurationManager.ConnectionStrings["Data:ConnectionString"].ToString();
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Category { get; set; }
 
@@ -19,7 +19,7 @@ namespace Hexagonal_Exercise.core.infrastructure.entityFramework
 
         private static DbContextOptions GetOptions()
         {
-            return SqlServerDbContextOptionsExtensions.UseSqlServer(new DbContextOptionsBuilder(), _connectionString).Options;
+            return SqlServerDbContextOptionsExtensions.UseSqlServer(new DbContextOptionsBuilder(), connectionString).Options;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Hexagonal_Exercise.core.application
 {
-    public interface IQueryHandler<in TQuery, TResult> 
+    public interface QueryHandler<in TQuery, TResult> 
         where TQuery: Query 
         where TResult : QueryResult
     {

@@ -10,13 +10,13 @@ namespace Exagonal_exercise.test.catalog.product.application
 {
     public class ProductDeleterShould
     {
-        private readonly Mock<IProductRepository> _productRepository;
-        private readonly ProductDeleter _productDeleter;
+        private readonly Mock<ProductRepository> productRepository;
+        private readonly ProductDeleter productDeleter;
 
         public ProductDeleterShould()
         {
-            _productRepository = new Mock<IProductRepository>();
-            _productDeleter = new ProductDeleter(_productRepository.Object);
+            productRepository = new Mock<ProductRepository>();
+            productDeleter = new ProductDeleter(productRepository.Object);
         }
 
         [Fact]
@@ -25,13 +25,13 @@ namespace Exagonal_exercise.test.catalog.product.application
             var product = ProductMother.Create();
             var id = ProductIdMother.Create();
 
-            _productRepository.Setup(x => x.Get(It.IsAny<ProductId>())).Returns(Task.FromResult(product));
-            _productRepository.Setup(x => x.Delete(It.IsAny<Product>()));
+            productRepository.Setup(x => x.Search(It.IsAny<ProductId>())).Returns(Task.FromResult(product));
+            productRepository.Setup(x => x.Remove(It.IsAny<Product>()));
 
-            await _productDeleter.Execute(id).ConfigureAwait(false);
+            await productDeleter.Execute(id).ConfigureAwait(false);
 
-            _productRepository.Verify(r => r.Get(id), Times.Once);
-            _productRepository.Verify(r => r.Delete(product), Times.Once);
+            productRepository.Verify(r => r.Search(id), Times.Once);
+            productRepository.Verify(r => r.Remove(product), Times.Once);
         }
 
         [Fact]
@@ -40,15 +40,15 @@ namespace Exagonal_exercise.test.catalog.product.application
             var product = ProductMother.Create();
             var id = ProductIdMother.Create();
 
-            _productRepository.Setup(x => x.Get(It.IsAny<ProductId>())).Returns(Task.FromResult<Product>(null));
-            _productRepository.Setup(x => x.Delete(It.IsAny<Product>()));
+            productRepository.Setup(x => x.Search(It.IsAny<ProductId>())).Returns(Task.FromResult<Product>(null));
+            productRepository.Setup(x => x.Remove(It.IsAny<Product>()));
 
 
-            var task =  Assert.ThrowsAsync<Exception>(async()=>await _productDeleter.Execute(id).ConfigureAwait(false));
+            var task =  Assert.ThrowsAsync<Exception>(async()=>await productDeleter.Execute(id).ConfigureAwait(false));
 
             Assert.Equal("Product not exist", task.Result.Message);
-            _productRepository.Verify(r => r.Get(id), Times.Once);
-            _productRepository.Verify(r => r.Delete(product), Times.Never);
+            productRepository.Verify(r => r.Search(id), Times.Once);
+            productRepository.Verify(r => r.Remove(product), Times.Never);
         }
     }
 }

@@ -9,21 +9,21 @@ namespace Exagonal_exercise.test.catalog.product.infrastructure
 {
     public class ProductSQLRepositoryShould
     {
-        private readonly ProductSQLRepository _productSQLRepository;
-        private readonly Mock<IConfiguration> _configuration;
-        private const string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hexagonal;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private readonly ProductSQLRepository productSQLRepository;
+        private readonly Mock<IConfiguration> configuration;
+        private const string CONNECTION_STRING = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hexagonal;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
         public ProductSQLRepositoryShould()
         {
-            _configuration = new Mock<IConfiguration>();
-            _configuration.Setup(c => c["ConnectionString"]).Returns(connectionString);
-            _productSQLRepository = new ProductSQLRepository(_configuration.Object);
+            configuration = new Mock<IConfiguration>();
+            configuration.Setup(c => c["ConnectionString"]).Returns(CONNECTION_STRING);
+            productSQLRepository = new ProductSQLRepository(configuration.Object);
         }
 
         [Fact]
         public void It_should_get_a_list_of_product()
         {
-            var task = _productSQLRepository.GetAll().ConfigureAwait(false);
+            var task = productSQLRepository.GetAll().ConfigureAwait(false);
 
             var actualProducts = task.GetAwaiter().GetResult();
 
@@ -34,10 +34,10 @@ namespace Exagonal_exercise.test.catalog.product.infrastructure
         [Fact]
         public void It_should_get_an_existing_product()
         {
-            var taskpre = _productSQLRepository.GetAll().ConfigureAwait(false);
+            var taskpre = productSQLRepository.GetAll().ConfigureAwait(false);
             var existingProduct = (taskpre.GetAwaiter().GetResult()).FirstOrDefault();
 
-            var task = _productSQLRepository.Get(existingProduct.Id).ConfigureAwait(false);
+            var task = productSQLRepository.Search(existingProduct.Id).ConfigureAwait(false);
 
             var actualProduct = task.GetAwaiter().GetResult();
 
@@ -50,9 +50,9 @@ namespace Exagonal_exercise.test.catalog.product.infrastructure
         {
             var expectedProduct = ProductMother.Create();
 
-            _productSQLRepository.Add(expectedProduct).ConfigureAwait(false).GetAwaiter().GetResult();
+            productSQLRepository.Save(expectedProduct).ConfigureAwait(false).GetAwaiter().GetResult();
 
-            var task = _productSQLRepository.Get(expectedProduct.Id).ConfigureAwait(false);
+            var task = productSQLRepository.Search(expectedProduct.Id).ConfigureAwait(false);
             var actualProduct = task.GetAwaiter().GetResult();
 
             Assert.NotNull(actualProduct);
@@ -62,28 +62,29 @@ namespace Exagonal_exercise.test.catalog.product.infrastructure
         [Fact]
         public void It_should_rename_an_existing_product()
         {
-            var expectedProduct = ProductMother.Create();
-            var taskpre = _productSQLRepository.GetAll().ConfigureAwait(false);
+            var expectedProductName = ProductNameMother.Create();
+            var taskpre = productSQLRepository.GetAll().ConfigureAwait(false);
             var existingProduct = (taskpre.GetAwaiter().GetResult()).FirstOrDefault();
+            existingProduct.Rename(expectedProductName);
 
-            _productSQLRepository.Modify(existingProduct.Id, expectedProduct).ConfigureAwait(false).GetAwaiter().GetResult();
+            productSQLRepository.Modify(existingProduct).ConfigureAwait(false).GetAwaiter().GetResult();
 
-            var task = _productSQLRepository.Get(existingProduct.Id).ConfigureAwait(false);
+            var task = productSQLRepository.Search(existingProduct.Id).ConfigureAwait(false);
             var actualProduct = task.GetAwaiter().GetResult();
 
             Assert.NotNull(actualProduct);
-            Assert.Equal(actualProduct.Name.Value, expectedProduct.Name.Value);
+            Assert.Equal(actualProduct.Name.Value, expectedProductName.Value);
         }
 
         [Fact]
         public void It_should_delete_an_existing_product()
         {
-            var taskpre = _productSQLRepository.GetAll().ConfigureAwait(false);
+            var taskpre = productSQLRepository.GetAll().ConfigureAwait(false);
             var existingProduct = (taskpre.GetAwaiter().GetResult()).FirstOrDefault();
 
-            _productSQLRepository.Delete(existingProduct).ConfigureAwait(false).GetAwaiter().GetResult();
+            productSQLRepository.Remove(existingProduct).ConfigureAwait(false).GetAwaiter().GetResult();
 
-            var task = _productSQLRepository.Get(existingProduct.Id).ConfigureAwait(false);
+            var task = productSQLRepository.Search(existingProduct.Id).ConfigureAwait(false);
             var actualProduct = task.GetAwaiter().GetResult();
 
             Assert.Null(actualProduct);

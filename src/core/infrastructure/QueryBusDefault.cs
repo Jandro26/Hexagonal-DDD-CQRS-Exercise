@@ -7,17 +7,17 @@ using Hexagonal_Exercise.core.application;
 
 namespace Hexagonal_Exercise.core.infrastructure
 {
-    public class QueryBusDefault : IQueryDispacher
+    public class QueryBusDefault : QueryDispacher
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceProvider serviceProvider;
         public QueryBusDefault(IServiceProvider serviceProvider)
         {
-            _serviceProvider = serviceProvider;
+            this.serviceProvider = serviceProvider;
         }
 
         public Task<TResult> Dispatch<TQuery, TResult>(TQuery query, CancellationToken cancellationToken) where TQuery : Query where TResult : QueryResult
         {
-            var handler = _serviceProvider.GetRequiredService<IQueryHandler<TQuery, TResult>>();
+            var handler = serviceProvider.GetRequiredService<QueryHandler<TQuery, TResult>>();
             if (handler == null)
                 throw new NullReferenceException($"handler of {nameof(TQuery)} which returning {nameof(TResult)}");
 

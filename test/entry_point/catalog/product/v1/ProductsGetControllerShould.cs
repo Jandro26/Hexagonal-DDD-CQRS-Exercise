@@ -9,14 +9,14 @@ namespace Exagonal_exercise.test.entry_point.catalog.product.v1
 {
     public class ProductsGetControllerShould: IClassFixture<WebApplicationFactory<Hexagonal_Exercise.Startup>>
     {
-        private readonly WebApplicationFactory<Hexagonal_Exercise.Startup> _factory;
-        private readonly HttpClient _httpClient;
+        private readonly WebApplicationFactory<Hexagonal_Exercise.Startup> factory;
+        private readonly HttpClient httpClient;
 
         public ProductsGetControllerShould(WebApplicationFactory<Hexagonal_Exercise.Startup> factory)
         {
-            _factory = factory;
+            this.factory = factory;
 
-            _httpClient = _factory.CreateClient(new WebApplicationFactoryClientOptions
+            httpClient = this.factory.CreateClient(new WebApplicationFactoryClientOptions
             {
                 AllowAutoRedirect = false,
                 BaseAddress = new System.Uri("https://localhost:44339")
@@ -30,7 +30,7 @@ namespace Exagonal_exercise.test.entry_point.catalog.product.v1
             var request = new HttpRequestMessage(HttpMethod.Get,
             "/api/Products?productId=1");
 
-            var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
+            var response = await httpClient.SendAsync(request).ConfigureAwait(false);
 
             Assert.True(response.IsSuccessStatusCode);
         }

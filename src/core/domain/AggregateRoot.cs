@@ -5,13 +5,14 @@ namespace Hexagonal_Exercise.catalog.core.domain
 {
     public abstract class AggregateRoot
     {
-        private IList<DomainEvent> _domainEvents = new List<DomainEvent>();
+        private IList<DomainEvent> domainEvents = new List<DomainEvent>();
 
-        public IEnumerable<DomainEvent> DomainEvents { get { return _domainEvents; } }
+        public IEnumerable<DomainEvent> GetDomainEvents()
+            => domainEvents;
 
         protected void AddDomainEvent(DomainEvent domainEvent)
         {   
-            _domainEvents.Add(domainEvent);
+            domainEvents.Add(domainEvent);
         }
     }
 }

@@ -14,13 +14,13 @@ namespace Hexagonal_Exercise.entry_point.catalog.v1.controller
     [ApiController]
     public class ProductsGetController : ControllerBase
     {
-        private readonly IQueryDispacher _queryBus;
-        private readonly IMapper _mapper;
+        private readonly QueryDispacher queryBus;
+        private readonly IMapper mapper;
 
-        public ProductsGetController(IQueryDispacher queryBus, IMapper mapper)
+        public ProductsGetController(QueryDispacher queryBus, IMapper mapper)
         {
-            _queryBus = queryBus;
-            _mapper = mapper;
+            this.queryBus = queryBus;
+            this.mapper = mapper;
         }
                
         /// <summary>
@@ -40,8 +40,8 @@ namespace Hexagonal_Exercise.entry_point.catalog.v1.controller
             try
             {
                 var query = new FindProductQuery(productId);
-                var response = await _queryBus.Dispatch<FindProductQuery, FindProductQueryResult>(query, cancellationToken).ConfigureAwait(false);
-                return Ok(_mapper.Map< GetProductByIdResultModel>(response));
+                var response = await queryBus.Dispatch<FindProductQuery, FindProductQueryResult>(query, cancellationToken).ConfigureAwait(false);
+                return Ok(mapper.Map< GetProductByIdResultModel>(response));
             }
             catch (Exception ex)
             {

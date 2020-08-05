@@ -1,24 +1,23 @@
-﻿using Hexagonal_Exercise.catalog.product.application.find;
-using Hexagonal_Exercise.catalog.product.domain;
+﻿using Hexagonal_Exercise.catalog.product.domain;
 using System.Threading.Tasks;
 
 namespace Hexagonal_Exercise.catalog.product.application.delete
 {
     public class ProductDeleter
     {
-        private readonly IProductRepository _productRepository;
-        private readonly DomainProductFinder _productFinder;
+        private readonly ProductRepository productRepository;
+        private readonly DomainProductFinder productFinder;
 
-        public ProductDeleter(IProductRepository productRepository)
+        public ProductDeleter(ProductRepository productRepository)
         {
-            _productFinder = new DomainProductFinder(productRepository);
-            _productRepository = productRepository;
+            productFinder = new DomainProductFinder(productRepository);
+            this.productRepository = productRepository;
         }
 
         public async Task Execute(ProductId id)
         {
-            var product = await _productFinder.Find(id).ConfigureAwait(false);
-            await _productRepository.Delete(product).ConfigureAwait(false);
+            var product = await productFinder.Find(id).ConfigureAwait(false);
+            await productRepository.Remove(product).ConfigureAwait(false);
         }
     }
 }

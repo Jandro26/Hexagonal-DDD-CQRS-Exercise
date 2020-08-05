@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace Hexagonal_Exercise.catalog.product.application.delete
 {
-    public class DeleteProductCommandHandler : ICommandHandler<DeleteProductCommand>
+    public class DeleteProductCommandHandler : CommandHandler<DeleteProductCommand>
     {
-        private readonly ProductDeleter _productDeleter;
-        public DeleteProductCommandHandler(IProductRepository productRepository)
+        private readonly ProductDeleter productDeleter;
+        public DeleteProductCommandHandler(ProductRepository productRepository)
         {
-            _productDeleter = new ProductDeleter(productRepository);
+            productDeleter = new ProductDeleter(productRepository);
         }
 
         public async Task Dispatch(DeleteProductCommand command, CancellationToken cancellationToken)
         {
             var id = new ProductId(command.Id);
-            await _productDeleter.Execute(id).ConfigureAwait(false);
+            await productDeleter.Execute(id).ConfigureAwait(false);
         }
     }
 }

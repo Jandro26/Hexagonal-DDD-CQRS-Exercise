@@ -13,11 +13,11 @@ namespace Hexagonal_Exercise.entry_point.catalog.v1.controller
     [ApiController]
     public class ProductsPutController : ControllerBase
     {
-        private readonly ICommandDispacher _commandBus;
+        private readonly CommandDispacher commandBus;
 
-        public ProductsPutController(ICommandDispacher commandBus)
+        public ProductsPutController(CommandDispacher commandBus)
         {
-            _commandBus = commandBus;
+            this.commandBus = commandBus;
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Hexagonal_Exercise.entry_point.catalog.v1.controller
             try
             {
                 var productCommand = new RenameProductCommand(productId, renameProductModel.Name);
-                await _commandBus.Dispatch(productCommand, cancellationToken).ConfigureAwait(false);
+                await commandBus.Dispatch(productCommand, cancellationToken).ConfigureAwait(false);
                 return Ok();
             }
             catch (Exception ex)

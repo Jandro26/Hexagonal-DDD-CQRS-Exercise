@@ -6,37 +6,37 @@ using System.Threading.Tasks;
 
 namespace Hexagonal_Exercise.catalog.product.infrastructure
 {
-    public class ProductSQLRepository: IProductRepository
+    public class ProductSQLRepository: ProductRepository
     {
-        private readonly string _connectionString;
-        private SqlConnection _dbConnection;
+        private readonly string connectionString;
+        private SqlConnection dbConnection;
 
         public ProductSQLRepository(IConfiguration configuration)
         {
-            _connectionString = configuration["ConnectionString"];
+            connectionString = configuration["ConnectionString"];
         }
 
         private async Task OpenConnection()
         {
-            _dbConnection = new SqlConnection();
-            _dbConnection.ConnectionString = _connectionString;
-            await _dbConnection.OpenAsync().ConfigureAwait(false);
+            dbConnection = new SqlConnection();
+            dbConnection.ConnectionString = connectionString;
+            await dbConnection.OpenAsync().ConfigureAwait(false);
         }
 
         private async Task CloseConnection()
         {
-            await _dbConnection.CloseAsync().ConfigureAwait(false);
-            _dbConnection.Dispose();
+            await dbConnection.CloseAsync().ConfigureAwait(false);
+            dbConnection.Dispose();
         }
 
-        public async Task Add(Product product)
+        public async Task Save(Product product)
         {
             try
             {
                 await OpenConnection().ConfigureAwait(false);
-                SqlTransaction sqlTrans = _dbConnection.BeginTransaction();
+                SqlTransaction sqlTrans = dbConnection.BeginTransaction();
 
-                var cmd = _dbConnection.CreateCommand();
+                var cmd = dbConnection.CreateCommand();
                 cmd.CommandText = "INSERT INTO dbo.Product (Id, Name)  VALUES (@Id, @Name)";
                 cmd.Parameters.AddWithValue("@Id", product.Id.Value);
                 cmd.Parameters.AddWithValue("@Name", product.Name.Value);
@@ -54,16 +54,16 @@ namespace Hexagonal_Exercise.catalog.product.infrastructure
             }
         }
 
-        public async Task Modify(ProductId id, Product product)
+        public async Task Modify(Product product)
         {
             try
             {
                 await OpenConnection().ConfigureAwait(false);
-                SqlTransaction sqlTrans = _dbConnection.BeginTransaction();
+                SqlTransaction sqlTrans = dbConnection.BeginTransaction();
 
-                var cmd = _dbConnection.CreateCommand();
+                var cmd = dbConnection.CreateCommand();
                 cmd.CommandText = "UPDATE Product SET Name = @Name  WHERE Id = @Id";
-                cmd.Parameters.AddWithValue("@Id", id.Value);
+                cmd.Parameters.AddWithValue("@Id", product.Id.Value);
                 cmd.Parameters.AddWithValue("@Name", product.Name.Value);
                 cmd.Transaction = sqlTrans;
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -78,21 +78,21 @@ namespace Hexagonal_Exercise.catalog.product.infrastructure
             }
         }
 
-        public async Task Delete(Product product)
+        public async Task Remove(Product product)
         {
             try
             {
                 await OpenConnection().ConfigureAwait(false);
-                SqlTransaction sqlTrans = _dbConnection.BeginTransaction();
+                SqlTransaction sqlTrans = dbConnection.BeginTransaction();
 
-                var cmd = _dbConnection.CreateCommand();
+                var cmd = dbConnection.CreateCommand();
                 cmd.CommandText = "DELETE FROM Product WHERE Id = @Id";
                 cmd.Parameters.AddWithValue("@Id", product.Id.Value);
                 cmd.Transaction = sqlTrans;
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                 sqlTrans.Commit();
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
             }
             finally
@@ -102,14 +102,14 @@ namespace Hexagonal_Exercise.catalog.product.infrastructure
         }
 
 
-        public async Task<Product> Get(ProductId id)
+        public async Task<Product> Search(ProductId id)
         {
             Product result = null;
             try
             {
                 await OpenConnection().ConfigureAwait(false);
 
-                var qry = _dbConnection.CreateCommand();
+                var qry = dbConnection.CreateCommand();
                 qry.CommandText = "SELECT * FROM Product WHERE Id = @Id";
                 qry.Parameters.AddWithValue("@Id", id.Value);
                 var reader = await qry.ExecuteReaderAsync().ConfigureAwait(false);
@@ -136,7 +136,7 @@ namespace Hexagonal_Exercise.catalog.product.infrastructure
             {
                 await OpenConnection().ConfigureAwait(false);
 
-                var qry = _dbConnection.CreateCommand();
+                var qry = dbConnection.CreateCommand();
                 qry.CommandText = "SELECT * FROM Product";
                 var reader = await qry.ExecuteReaderAsync().ConfigureAwait(false);
 

@@ -4,11 +4,10 @@ namespace Hexagonal_Exercise.catalog.product.domain
 {
     public class ProductName: ValueObject
     {
-        private readonly string _name;
-        public string Value { get { return _name; } }
+        public string Value { get; }
         public ProductName(string name)
         {
-            _name = CheckNameSize(name);
+            Value = CheckNameSize(name);
         }
 
         private string CheckNameSize(string name)

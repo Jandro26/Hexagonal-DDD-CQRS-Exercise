@@ -52,15 +52,15 @@ namespace Hexagonal_Exercise
 
             services.AddTransient<IValidator<CreateProductModel>, CreateProductModelValidator>();
 
-            services.AddTransient<IProductRepository, ProductSQLRepository>()
-                    .AddSingleton<IDomainEventBus, DomainEventBusDefault>()
-                    .AddSingleton<ICommandDispacher, CommandBusDefault>()
-                    .AddSingleton<IQueryDispacher, QueryBusDefault>();
+            services.AddTransient<ProductRepository, ProductSQLRepository>()
+                    .AddSingleton<DomainEventBus, DomainEventBusDefault>()
+                    .AddSingleton<CommandDispacher, CommandBusDefault>()
+                    .AddSingleton<QueryDispacher, QueryBusDefault>();
 
-            services.AddTransient<ICommandHandler<CreateProductCommand>, CreateProductCommandHandler>()
-                    .AddTransient<ICommandHandler<RenameProductCommand>, RenameProductCommandHandler>()
-                    .AddTransient<ICommandHandler<DeleteProductCommand>, DeleteProductCommandHandler>()
-                    .AddTransient<IQueryHandler<FindProductQuery, FindProductQueryResult>, FindProductQueryHandler>();
+            services.AddTransient<CommandHandler<CreateProductCommand>, CreateProductCommandHandler>()
+                    .AddTransient<CommandHandler<RenameProductCommand>, RenameProductCommandHandler>()
+                    .AddTransient<CommandHandler<DeleteProductCommand>, DeleteProductCommandHandler>()
+                    .AddTransient<QueryHandler<FindProductQuery, FindProductQueryResult>, FindProductQueryHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

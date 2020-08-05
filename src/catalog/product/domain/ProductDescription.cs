@@ -1,18 +1,13 @@
 ﻿using Hexagonal_Exercise.core.domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Hexagonal_Exercise.catalog.product.domain
 {
     public class ProductDescription: ValueObject
     {
-        private readonly string _description;
-        public string Value { get { return _description; } }
+        public string Value { get; }
         public ProductDescription(string description)
         {
-            _description = checkDescriptionSize(description);
+            Value = checkDescriptionSize(description);
         }
 
         private string checkDescriptionSize(string description)

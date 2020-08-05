@@ -8,20 +8,20 @@ using System.Threading.Tasks;
 
 namespace Hexagonal_Exercise.catalog.product.application.find
 {
-    public class FindProductQueryHandler: IQueryHandler<FindProductQuery, FindProductQueryResult>
+    public class FindProductQueryHandler: QueryHandler<FindProductQuery, FindProductQueryResult>
     {
-        private readonly ProductFinder _productFinder;
-        private readonly FindProductResultConverter _productResponseConverter;
-        public FindProductQueryHandler(IProductRepository productRepository)
+        private readonly ProductFinder productFinder;
+        private readonly FindProductResultConverter productResponseConverter;
+        public FindProductQueryHandler(ProductRepository productRepository)
         {
-            _productFinder = new ProductFinder(productRepository);
-            _productResponseConverter = new FindProductResultConverter();
+            productFinder = new ProductFinder(productRepository);
+            productResponseConverter = new FindProductResultConverter();
         }
 
         public async Task<FindProductQueryResult> Dispatch(FindProductQuery query, CancellationToken cancellationToken)
         {
             var id = new ProductId(query.Id);
-            return await _productResponseConverter.Map(_productFinder.Execute(id).Result);
+            return await productResponseConverter.Map(productFinder.Execute(id).Result);
         }
     }
 }

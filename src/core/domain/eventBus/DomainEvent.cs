@@ -4,13 +4,12 @@ namespace Hexagonal_Exercise.core.domain.eventBus
 {
     public class DomainEvent
     {
-        private Guid _id;
 
-        public Guid Id { get { return _id; } }
+        public Guid Id { get ; }
 
         public DomainEvent()
         {
-            _id = new Guid();
+            Id = new Guid();
         }
     }
 }

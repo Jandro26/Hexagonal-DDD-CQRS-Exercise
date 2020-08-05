@@ -9,14 +9,14 @@ namespace Exagonal_exercise.test.entry_point.catalog.product.v1
 {
     public class ProductsDeleteControllerShould: IClassFixture<WebApplicationFactory<Hexagonal_Exercise.Startup>>
     {
-        private readonly WebApplicationFactory<Hexagonal_Exercise.Startup> _factory;
-        private readonly HttpClient _httpClient;
+        private readonly WebApplicationFactory<Hexagonal_Exercise.Startup> factory;
+        private readonly HttpClient httpClient;
 
         public ProductsDeleteControllerShould(WebApplicationFactory<Hexagonal_Exercise.Startup> factory)
         {
-            _factory = factory;
+            this.factory = factory;
 
-            _httpClient = _factory.CreateClient(new WebApplicationFactoryClientOptions
+            httpClient = this.factory.CreateClient(new WebApplicationFactoryClientOptions
             {
                 AllowAutoRedirect = false,
                 BaseAddress = new System.Uri("https://localhost:44339")
@@ -25,19 +25,19 @@ namespace Exagonal_exercise.test.entry_point.catalog.product.v1
         }
 
         [Fact]
-        public async void It_should_delete_an_existing_product()
+        public async void It_should_remove_an_existing_product()
         {
             var product = CreateProductModelMother.Create(2);
             var requestArr = new HttpRequestMessage(HttpMethod.Post,
             "/api/Products");
             var productJson = new StringContent(JsonSerializer.Serialize(product), Encoding.UTF8, "application/json");
             requestArr.Content = productJson;
-            var responseArr = await _httpClient.SendAsync(requestArr).ConfigureAwait(false);
+            var responseArr = await httpClient.SendAsync(requestArr).ConfigureAwait(false);
 
             var request = new HttpRequestMessage(HttpMethod.Delete,
             "/api/Products?productId=2");
 
-            var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
+            var response = await httpClient.SendAsync(request).ConfigureAwait(false);
 
             Assert.True(response.IsSuccessStatusCode);
         }

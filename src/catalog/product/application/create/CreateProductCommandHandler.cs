@@ -9,20 +9,20 @@ using System.Threading.Tasks;
 
 namespace Hexagonal_Exercise.catalog.product.application.create
 {
-    public class CreateProductCommandHandler: ICommandHandler<CreateProductCommand>
+    public class CreateProductCommandHandler: CommandHandler<CreateProductCommand>
     {
-        private readonly ProductCreator _productCreator;
+        private readonly ProductCreator productCreator;
 
-        public CreateProductCommandHandler(IProductRepository productRepository, IDomainEventBus eventBus) 
+        public CreateProductCommandHandler(ProductRepository productRepository, DomainEventBus eventBus) 
         {
-            _productCreator = new ProductCreator(productRepository, eventBus);
+            productCreator = new ProductCreator(productRepository, eventBus);
         }
 
         public async Task Dispatch(CreateProductCommand productCommand, CancellationToken cancellationToken)
         {
             var id = new ProductId(productCommand.Id);
             var name = new ProductName(productCommand.Name);
-            await _productCreator.Execute(id, name).ConfigureAwait(false);
+            await productCreator.Execute(id, name).ConfigureAwait(false);
         }
     }
 }

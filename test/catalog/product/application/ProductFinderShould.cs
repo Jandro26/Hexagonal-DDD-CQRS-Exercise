@@ -11,13 +11,13 @@ namespace Exagonal_exercise.test.catalog.product.application
 {
     public class ProductFinderShould
     {
-        private readonly Mock<IProductRepository> _productRepository;
-        private readonly ProductFinder _productFinder;
+        private readonly Mock<ProductRepository> productRepository;
+        private readonly ProductFinder productFinder;
 
         public ProductFinderShould()
         {
-            _productRepository = new Mock<IProductRepository>();
-            _productFinder = new ProductFinder(_productRepository.Object);
+            productRepository = new Mock<ProductRepository>();
+            productFinder = new ProductFinder(productRepository.Object);
         }
 
         [Fact]
@@ -25,11 +25,11 @@ namespace Exagonal_exercise.test.catalog.product.application
         {
             var id = ProductIdMother.Create();
             var expectedProduct = ProductMother.Create();
-            _productRepository.Setup(x => x.Get(It.IsAny<ProductId>())).Returns(Task.FromResult(expectedProduct));
+            productRepository.Setup(x => x.Search(It.IsAny<ProductId>())).Returns(Task.FromResult(expectedProduct));
 
-            var actualProduct = await _productFinder.Execute(id).ConfigureAwait(false);
+            var actualProduct = await productFinder.Execute(id).ConfigureAwait(false);
 
-            _productRepository.Verify(r => r.Get(id), Times.Once);
+            productRepository.Verify(r => r.Search(id), Times.Once);
             Assert.Same(expectedProduct, actualProduct);
         }
 
@@ -37,11 +37,11 @@ namespace Exagonal_exercise.test.catalog.product.application
         public void it_should_faild_when_a_product_not_exist()
         {
             var id = ProductIdMother.Create();
-            _productRepository.Setup(x=>x.Get(It.IsAny<ProductId>())).Returns(Task.FromResult<Product>(null));
+            productRepository.Setup(x=>x.Search(It.IsAny<ProductId>())).Returns(Task.FromResult<Product>(null));
 
-            var task = Assert.ThrowsAsync<Exception>(async () => await _productFinder.Execute(id).ConfigureAwait(false));
+            var task = Assert.ThrowsAsync<Exception>(async () => await productFinder.Execute(id).ConfigureAwait(false));
 
-            _productRepository.Verify(r => r.Get(id), Times.Once);
+            productRepository.Verify(r => r.Search(id), Times.Once);
             Assert.Equal("Product not exist", task.Result.Message);
         }
     }

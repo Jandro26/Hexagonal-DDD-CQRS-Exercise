@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 
 namespace Hexagonal_Exercise.catalog.product.application.update
 {
-    public class RenameProductCommandHandler : ICommandHandler<RenameProductCommand>
+    public class RenameProductCommandHandler : CommandHandler<RenameProductCommand>
     {
-        private readonly ProductRenamer _productRenamer;
-        public RenameProductCommandHandler(IProductRepository productRepository)
+        private readonly ProductRenamer productRenamer;
+        public RenameProductCommandHandler(ProductRepository productRepository)
         {
-            _productRenamer = new ProductRenamer(productRepository);
+            productRenamer = new ProductRenamer(productRepository);
         }
 
         public async Task Dispatch(RenameProductCommand command, CancellationToken cancellationToken)
         {
             var id = new ProductId(command.Id);
             var name = new ProductName(command.Name);
-            await _productRenamer.Execute(id, name).ConfigureAwait(false);
+            await productRenamer.Execute(id, name).ConfigureAwait(false);
         }
     }
 }

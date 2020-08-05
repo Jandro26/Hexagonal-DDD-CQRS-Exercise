@@ -10,15 +10,15 @@ namespace Exagonal_exercise.test.catalog.product.application
 {
     public class ProductCreatorShould
     {
-        private readonly Mock<IProductRepository> _productRepository;
-        private readonly Mock<IDomainEventBus> _eventBus;
-        private readonly ProductCreator _productCreator; 
+        private readonly Mock<ProductRepository> productRepository;
+        private readonly Mock<DomainEventBus> eventBus;
+        private readonly ProductCreator productCreator; 
 
         public ProductCreatorShould()
         {
-            _productRepository = new Mock<IProductRepository>();
-            _eventBus = new Mock<IDomainEventBus>();
-            _productCreator = new ProductCreator(_productRepository.Object, _eventBus.Object);
+            productRepository = new Mock<ProductRepository>();
+            eventBus = new Mock<DomainEventBus>();
+            productCreator = new ProductCreator(productRepository.Object, eventBus.Object);
         }
 
         [Fact]
@@ -26,12 +26,12 @@ namespace Exagonal_exercise.test.catalog.product.application
         {
             var id = ProductIdMother.Create();
             var name = ProductNameMother.Create();
-            _productRepository.Setup(x => x.Add(It.IsAny<Product>()));
+            productRepository.Setup(x => x.Save(It.IsAny<Product>()));
 
-            await _productCreator.Execute(id, name).ConfigureAwait(false);
+            await productCreator.Execute(id, name).ConfigureAwait(false);
 
-            _productRepository.Verify(r => r.Add(It.IsAny<Product>()), Times.Once);
-            _eventBus.Verify(r => r.Publish(It.IsAny<IEnumerable<DomainEvent>>()), Times.Once);
+            productRepository.Verify(r => r.Save(It.IsAny<Product>()), Times.Once);
+            eventBus.Verify(r => r.Publish(It.IsAny<IEnumerable<DomainEvent>>()), Times.Once);
 
         }
 
@@ -41,10 +41,10 @@ namespace Exagonal_exercise.test.catalog.product.application
             var id = ProductIdMother.Create();
             var name = ProductNameMother.Create(name:"Product name Product name Product name");
 
-            await _productCreator.Execute(id, name).ConfigureAwait(false);
+            await productCreator.Execute(id, name).ConfigureAwait(false);
 
-            _productRepository.Verify(r => r.Add(It.IsAny<Product>()), Times.Once);
-            _eventBus.Verify(r => r.Publish(It.IsAny<IEnumerable<DomainEvent>>()), Times.Once);
+            productRepository.Verify(r => r.Save(It.IsAny<Product>()), Times.Once);
+            eventBus.Verify(r => r.Publish(It.IsAny<IEnumerable<DomainEvent>>()), Times.Once);
         }
     }
 }

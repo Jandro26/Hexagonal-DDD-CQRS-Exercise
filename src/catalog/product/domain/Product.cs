@@ -12,8 +12,8 @@ namespace Hexagonal_Exercise.catalog.product.domain
 
         public Product(ProductId id, ProductName name)
         {
-            this.Id = id;
-            this.Name = name;
+            Id = id;
+            Name = name;
         }
 
         public static Product Create(ProductId id, ProductName name)
@@ -25,7 +25,7 @@ namespace Hexagonal_Exercise.catalog.product.domain
 
         public void Rename(ProductName newName)
         {
-            this.Name = newName;
+            Name = newName;
         }
 
 

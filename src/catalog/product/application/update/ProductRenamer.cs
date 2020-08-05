@@ -5,19 +5,19 @@ namespace Hexagonal_Exercise.catalog.product.application.update
 {
     public class ProductRenamer
     {
-        private readonly IProductRepository _productRepository;
-        private readonly DomainProductFinder _productFinder;
-        public ProductRenamer(IProductRepository productRepository)
+        private readonly ProductRepository productRepository;
+        private readonly DomainProductFinder productFinder;
+        public ProductRenamer(ProductRepository productRepository)
         {
-            _productRepository = productRepository;
-            _productFinder = new DomainProductFinder(productRepository);
+            this.productRepository = productRepository;
+            productFinder = new DomainProductFinder(productRepository);
         }
 
         public async Task Execute(ProductId id, ProductName newName)
         {
-            var product = await _productFinder.Find(id).ConfigureAwait(false);
+            var product = await productFinder.Find(id).ConfigureAwait(false);
             product.Rename(newName);
-            await _productRepository.Modify(id, product).ConfigureAwait(false);
+            await productRepository.Modify(product).ConfigureAwait(false);
         } 
     }
 }

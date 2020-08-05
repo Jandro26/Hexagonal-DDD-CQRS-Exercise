@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Hexagonal_Exercise.core.application
 {
-    public interface ICommandHandler<in TCommand> where TCommand: Command
+    public interface CommandHandler<in TCommand> where TCommand: Command
     {
         Task Dispatch(TCommand command, CancellationToken cancellationToken);
     }

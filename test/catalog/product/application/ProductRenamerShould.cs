@@ -10,13 +10,13 @@ namespace Exagonal_exercise.test.catalog.product.application
 {
     public class ProductRenamerShould
     {
-        private readonly Mock<IProductRepository> _productRepository;
-        private readonly ProductRenamer _productRenamer;
+        private readonly Mock<ProductRepository> productRepository;
+        private readonly ProductRenamer productRenamer;
 
         public ProductRenamerShould()
         {
-            _productRepository = new Mock<IProductRepository>();
-            _productRenamer = new ProductRenamer(_productRepository.Object);
+            productRepository = new Mock<ProductRepository>();
+            productRenamer = new ProductRenamer(productRepository.Object);
         }
 
         [Fact]
@@ -25,13 +25,13 @@ namespace Exagonal_exercise.test.catalog.product.application
             var id = ProductIdMother.Create();
             var product = ProductMother.Create();
             var name_new = ProductNameMother.Create(name:"Rename product");
-            _productRepository.Setup(x => x.Get(It.IsAny<ProductId>())).Returns(Task.FromResult<Product>(product));
-            _productRepository.Setup(x => x.Modify(It.IsAny<ProductId>(), It.IsAny<Product>()));
+            productRepository.Setup(x => x.Search(It.IsAny<ProductId>())).Returns(Task.FromResult<Product>(product));
+            productRepository.Setup(x => x.Modify(It.IsAny<Product>()));
 
-            await _productRenamer.Execute(id, name_new).ConfigureAwait(false);
+            await productRenamer.Execute(id, name_new).ConfigureAwait(false);
 
-            _productRepository.Verify(r => r.Get(id), Times.Once);
-            _productRepository.Verify(r => r.Modify(id, product), Times.Once);
+            productRepository.Verify(r => r.Search(id), Times.Once);
+            productRepository.Verify(r => r.Modify(product), Times.Once);
             Assert.Equal(name_new, product.Name);
         }
 
@@ -41,13 +41,13 @@ namespace Exagonal_exercise.test.catalog.product.application
             var id = ProductIdMother.Create();
             var product = ProductMother.Create();
             var name_new = ProductNameMother.Create(name: "Rename product");
-            _productRepository.Setup(x => x.Get(It.IsAny<ProductId>())).Returns(Task.FromResult<Product>(null));
-            _productRepository.Setup(x => x.Modify(It.IsAny<ProductId>(), It.IsAny<Product>()));
+            productRepository.Setup(x => x.Search(It.IsAny<ProductId>())).Returns(Task.FromResult<Product>(null));
+            productRepository.Setup(x => x.Modify(It.IsAny<Product>()));
 
-            var task = Assert.ThrowsAsync<Exception>(async () => await _productRenamer.Execute(id, name_new).ConfigureAwait(false));
+            var task = Assert.ThrowsAsync<Exception>(async () => await productRenamer.Execute(id, name_new).ConfigureAwait(false));
 
-            _productRepository.Verify(r => r.Get(id), Times.Once);
-            _productRepository.Verify(r => r.Modify(id, product), Times.Never);
+            productRepository.Verify(r => r.Search(id), Times.Once);
+            productRepository.Verify(r => r.Modify(product), Times.Never);
             Assert.Equal("Product not exist", task.Result.Message);
         }
 
