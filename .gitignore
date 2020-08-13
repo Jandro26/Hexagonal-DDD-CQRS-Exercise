@@ -7,3 +7,5 @@
 /test/bin/Debug/netcoreapp3.1
 /test/obj
 /src/obj
+/src/bin/Release/netcoreapp3.1
+/test/bin/Release/netcoreapp3.1

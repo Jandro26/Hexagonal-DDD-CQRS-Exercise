@@ -1,26 +1,24 @@
 ﻿using Hexagonal_Exercise.catalog.product.domain;
-using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+using MySql.Data.MySqlClient;
 
 namespace Hexagonal_Exercise.catalog.product.infrastructure
 {
-    public class ProductSQLRepository: ProductRepository
+    public class ProductMySQLRepository: ProductRepository
     {
         private readonly string connectionString;
-        private SqlConnection dbConnection;
+        private MySqlConnection dbConnection;
 
 
-        public ProductSQLRepository(IConfiguration configuration)
+        public ProductMySQLRepository()
         {
-            connectionString = configuration["ConnectionString"];
+            connectionString = "Server=db;port=3306;Database=Hexagonal;User=sa;Password=MyPassword001;";
         }
 
         private async Task OpenConnection()
         {
-            dbConnection = new SqlConnection();
+            dbConnection = new MySqlConnection();
             dbConnection.ConnectionString = connectionString;
             await dbConnection.OpenAsync().ConfigureAwait(false);
         }
@@ -36,15 +34,11 @@ namespace Hexagonal_Exercise.catalog.product.infrastructure
             try
             {
                 await OpenConnection().ConfigureAwait(false);
-                SqlTransaction sqlTrans = dbConnection.BeginTransaction();
-
                 var cmd = dbConnection.CreateCommand();
                 cmd.CommandText = "INSERT INTO dbo.Product (Id, Name)  VALUES (@Id, @Name)";
                 cmd.Parameters.AddWithValue("@Id", product.Id.Value);
                 cmd.Parameters.AddWithValue("@Name", product.Name.Value);
-                cmd.Transaction = sqlTrans;
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-                sqlTrans.Commit();
             }
             catch (System.Exception ex)
             {
@@ -61,15 +55,11 @@ namespace Hexagonal_Exercise.catalog.product.infrastructure
             try
             {
                 await OpenConnection().ConfigureAwait(false);
-                SqlTransaction sqlTrans = dbConnection.BeginTransaction();
-
                 var cmd = dbConnection.CreateCommand();
                 cmd.CommandText = "UPDATE Product SET Name = @Name  WHERE Id = @Id";
                 cmd.Parameters.AddWithValue("@Id", product.Id.Value);
                 cmd.Parameters.AddWithValue("@Name", product.Name.Value);
-                cmd.Transaction = sqlTrans;
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-                sqlTrans.Commit();
             }
             catch (System.Exception)
             {
@@ -85,14 +75,10 @@ namespace Hexagonal_Exercise.catalog.product.infrastructure
             try
             {
                 await OpenConnection().ConfigureAwait(false);
-                SqlTransaction sqlTrans = dbConnection.BeginTransaction();
-
                 var cmd = dbConnection.CreateCommand();
                 cmd.CommandText = "DELETE FROM Product WHERE Id = @Id";
                 cmd.Parameters.AddWithValue("@Id", product.Id.Value);
-                cmd.Transaction = sqlTrans;
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-                sqlTrans.Commit();
             }
             catch (System.Exception)
             {
