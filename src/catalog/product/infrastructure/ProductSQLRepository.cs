@@ -1,9 +1,9 @@
 ﻿using Hexagonal_Exercise.catalog.product.domain;
+using log4net.Core;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 
 namespace Hexagonal_Exercise.catalog.product.infrastructure
 {
@@ -46,9 +46,9 @@ namespace Hexagonal_Exercise.catalog.product.infrastructure
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                 sqlTrans.Commit();
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
-                throw;
+
             }
             finally
             {
@@ -120,7 +120,7 @@ namespace Hexagonal_Exercise.catalog.product.infrastructure
                     result = new Product(new ProductId(reader.GetInt32(0)), new ProductName(reader.GetString(1)));
 
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
                 
             }

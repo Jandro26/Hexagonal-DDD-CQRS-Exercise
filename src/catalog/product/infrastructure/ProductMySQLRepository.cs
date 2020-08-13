@@ -40,9 +40,9 @@ namespace Hexagonal_Exercise.catalog.product.infrastructure
                 cmd.Parameters.AddWithValue("@Name", product.Name.Value);
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
-                throw;
+
             }
             finally
             {
@@ -106,7 +106,7 @@ namespace Hexagonal_Exercise.catalog.product.infrastructure
                     result = new Product(new ProductId(reader.GetInt32(0)), new ProductName(reader.GetString(1)));
 
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
                 
             }
